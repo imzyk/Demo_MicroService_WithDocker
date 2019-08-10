@@ -1,0 +1,56 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: topo-back-engine-deployment
+  labels:
+    app: topo-back-engine
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: topo-back-engine
+  template:
+    metadata:
+      labels:
+        app: topo-back-engine
+    spec:
+      containers:
+      - name: topo-back-engine
+        image: reg/topology/topology_back_engine:v1
+        imagePullPolicy: Always
+        env:
+          - name: RABBITMQ_HOST
+            value: "rabbitmq"
+          - name: RABBITMQ_PORT
+            value: "5672"
+          - name: RABBITMQ_VHOST
+            value: "/topology-test"
+          - name: RABBITMQ_USER
+            value: "topology-test"
+          - name: RABBITMQ_PASSWORD
+            value: "topology-test"
+          - name: RABBITMQ_QUEUE
+            value: "topology-request-queue"
+          - name: TOPOLOGY_SERVICE
+            value: "http://topo-restservice/topo/api/v1.0/result_upload"
+        ports:
+          - containerPort: 5000
+      nodeSelector:
+        nodeType: worker
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: topo-back-engine
+  labels:
+    name: topo-back-engine
+spec:
+  type: NodePort
+  ports:
+  - protocol: TCP
+    port: 5000
+    targetPort: 5000
+  selector:
+    app: topo-back-engine

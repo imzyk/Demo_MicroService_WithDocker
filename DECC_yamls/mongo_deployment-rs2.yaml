@@ -1,0 +1,41 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: mongo-deployment-rs2
+  labels:
+    app: mongo-rs2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongo-rs2
+  template:
+    metadata:
+      labels:
+        app: mongo-rs2
+    spec:
+      containers:
+      - name: mongo
+        image: mongo:3.4
+        command: ["/bin/bash","-c","echo 127.0.0.1 mongo-rs1 >> /etc/hosts && mongod --replSet topoRS --noprealloc --auth --keyFile /data/db/mongodb-keyfile"]
+#        command:
+#        - mongod
+#        - "--replSet"
+#        - topoRS
+#        - "--noprealloc"
+#        - "--auth"
+#        - "--keyFile"
+#        - "/data/db/mongodb-keyfile"
+        volumeMounts:
+        - mountPath: /data/db
+          name: data-volume
+        imagePullPolicy: IfNotPresent
+        ports:
+          - containerPort: 27017
+      nodeSelector:
+        database_role: monogo-rs2
+      volumes:
+      - name: data-volume
+        hostPath:
+          path: /data

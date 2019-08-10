@@ -1,0 +1,54 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: topo-test-launch-deployment
+  labels:
+    app: topo-test-launch
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: topo-test-launch
+  template:
+    metadata:
+      labels:
+        app: topo-test-launch
+    spec:
+      containers:
+      - name: topo-test-launch
+        image: reg-bj/topology/topology_test_launch:v1
+        imagePullPolicy: Always
+        env:
+          - name: RABBITMQ_HOST
+            value: "rabbitmq"
+          - name: RABBITMQ_PORT
+            value: "5672"
+          - name: RABBITMQ_VHOST
+            value: "/topology-test"
+          - name: RABBITMQ_USER
+            value: "topology-test"
+          - name: RABBITMQ_PASSWORD
+            value: "topology-test"
+          - name: RABBITMQ_QUEUE
+            value: "topology-request-queue"
+        ports:
+          - containerPort: 5000
+      nodeSelector:
+        nodeType: worker
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: topo-test-launch
+  labels:
+    name: topo-test-launch
+spec:
+  type: NodePort
+  ports:
+  - protocol: TCP
+    port: 5000
+    targetPort: 5000
+  selector:
+    app: topo-test-launch

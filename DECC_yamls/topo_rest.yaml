@@ -1,0 +1,48 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: topo-restservice-deployment
+  labels:
+    app: topo-restservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: topo-restservice
+  template:
+    metadata:
+      labels:
+        app: topo-restservice
+    spec:
+      containers:
+      - name: topo-restservice
+        image: reg/topology/topo_service:v1
+        imagePullPolicy: Always
+        env:
+          - name: DATABASE_LINK
+            value: "mongodb://topology:topology@mongo-rs1:27017,mongo-rs2:27017,mongo-rs3:27017/topology_data?authMechanism=SCRAM-SHA-1"
+          - name: DATABASE_NAME
+            value: "topology_data"
+          - name: COLLECTION_NAME
+            value: "topology_result"
+        ports:
+          - containerPort: 5000
+      nodeSelector:
+        nodeType: worker
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: topo-restservice
+  labels:
+    name: topo-restservice
+spec:
+  type: NodePort
+  ports:
+  - protocol: TCP
+    port: 5000
+    targetPort: 5000
+  selector:
+    app: topo-restservice

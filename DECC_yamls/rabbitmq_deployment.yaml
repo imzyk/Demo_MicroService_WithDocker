@@ -1,0 +1,35 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: rabbitmq-deployment
+  labels:
+    app: rabbitmq
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbitmq
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+    spec:
+      containers:
+      - name: rabbitmq
+        image: docker.io/rabbitmq:3-management
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+        - mountPath: /var/lib/rabbitmq
+          name: data-volume
+        ports:
+          - name: queue-port
+            containerPort: 5672
+          - name: mgt-port
+            containerPort: 15672
+      nodeSelector:
+        database_role: monogo-rs2
+      volumes:
+      - name: data-volume
+        hostPath:
+          path: /rabbitdata

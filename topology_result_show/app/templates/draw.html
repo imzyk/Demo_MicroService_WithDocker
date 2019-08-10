@@ -1,0 +1,428 @@
+<!DOCTYPE> 
+<html>  
+  <head>  
+
+    <script type="text/javascript" src="{{url_for('static', filename='ichart.1.2.min.js')}}"></script>  
+    <script type="text/javascript">
+
+							$(function(){
+				var data = [
+				         	{
+				         		name : 'build {{ htmlData["toolsbuildold"] }}',
+				         		value:{{ htmlData["oldinstalltime"]|tojson }},
+				         		color: '#80bd91'
+				         	},
+				         	{
+				         		name : 'build {{ htmlData["toolsbuild"] }}',
+				         		value:{{ htmlData["newinstalltime"]|tojson }},
+				                /*tip:{
+				        	        enable:true,
+					                listeners:{
+						                parseText:function(t,x,y,a,b,c,d){
+							                //return '{{ htmlData["timediff"] }}';
+							                return x + ' '+y+' '+a +' ' +b +' '+c +' ' +d +"-"+t[1-b] +'+' +data[0]["name"] + "--" + data[0]["value"]
+						                }
+					                }
+				                },*/
+				         		color:'#9CCEF0'
+				         	}
+				         ];
+				var chart = new iChart.ColumnMulti2D({
+						render : 'canvasInstall',
+						data: data,
+						//labels:{{ htmlData["gosList"]|tojson }},
+						labels:{{ htmlData["gosinstallTimeDiff"]|tojson }},
+						title : 'Topology test tools {{ htmlData["mark"] }} time',
+						subtitle : '{{ htmlData["timesubtitle"] |safe}}',
+						footnote : 'data source：topology test. Time Unit:second',
+						width : 800,
+						height : 400,
+						background_color : '#c1ffe4',
+				        animation : true,
+				        animation_duration:1000,
+
+						legend:{
+							enable:true,
+							background_color : null,
+							border : {
+								enable : false
+							}
+						},
+				        tip:{
+				            enable:true,
+					        listeners:{
+						        parseText:function(tip,name,value,a,index){
+							        var id = data[parseInt(index)]["value"].indexOf(value)
+							        var conterValue = data[1-parseInt(index)]["value"][id]
+							        var base = conterValue//value
+							        if(index ==0){
+							         	base = value//conterValue
+							        }
+							        var diff=""
+							        if ( parseInt(value) > parseInt(conterValue) ){
+							           	diff = "+"+ (parseFloat(value-conterValue)*100/base).toFixed(2) + "%"
+							        }else{
+							           	diff = "-" + (parseFloat(conterValue-value)*100/base).toFixed(2) + "%"
+							        }
+							        return diff
+						        }
+					        }
+				        },
+						coordinate:{
+							background_color : '#c1ffe4',
+							scale:[{
+								 position:'left',	
+								 start_scale:0,
+								 end_scale:300,
+								 scale_space:20
+							}],
+							width:650,
+							height:260
+						}
+				});
+				chart.draw();
+			});
+
+            
+							$(function(){
+				var data = [
+				         	{
+				         		name : 'build {{ htmlData["toolsbuildold"] }}',
+				         		value:{{ htmlData["oldMemAve"]|tojson }},
+				         		color: '#80bd91'
+				         	},
+				         	{
+				         		name : 'build {{ htmlData["toolsbuild"] }}',
+				         		value:{{ htmlData["newMemAve"]|tojson }},
+				         		color:'#9CCEF0'
+				         	}
+				         ];
+				var chart = new iChart.ColumnMulti2D({
+						render : 'canvasMemChart',
+						data: data,
+						labels:{{ htmlData["memCmpLabel"]|tojson }},
+						title : 'Topology test tools {{ htmlData["mark"] }} Memory Usage',
+						subtitle : '{{ htmlData["timesubtitle"]|safe }}',
+						footnote : 'data source：topology test. Time Unit:Mb',
+						width : 800,
+						height : 400,
+						background_color : '#c1ffe4',
+				        animation : true,
+				        animation_duration:1000,
+
+						legend:{
+							enable:true,
+							background_color : null,
+							border : {
+								enable : false
+							}
+						},
+				        tip:{
+				            enable:true,
+					        listeners:{
+						        parseText:function(tip,name,value,a,index){
+							        var id = data[parseInt(index)]["value"].indexOf(value)
+							        var conterValue = data[1-parseInt(index)]["value"][id]
+							        var base = value
+							        if(index ==0){
+							         	base = conterValue
+							        }
+							        var diff=""
+							        if ( parseInt(value) > parseInt(conterValue) ){
+							           	diff = "+"+ (parseFloat(value-conterValue)*100/base).toFixed(2) + "%"
+							        }else{
+							           	diff = "-" + (parseFloat(conterValue-value)*100/base).toFixed(2) + "%"
+							        }
+							        return diff
+						        }
+					        }
+				        },
+						coordinate:{
+							background_color : '#c1ffe4',
+							scale:[{
+								 position:'left',	
+								 start_scale:0,
+								 end_scale:4096,
+								 scale_space:512
+							}],
+							width:650,
+							height:260
+						}
+				});
+				chart.draw();
+			});
+            
+							$(function(){
+				var data = [
+				         	{
+				         		name : 'build {{ htmlData["toolsbuildold"] }}',
+				         		value:{{ htmlData["oldcpuAve"]|tojson }},
+				         		color: '#80bd91'
+				         	},
+				         	{
+				         		name : 'build {{ htmlData["toolsbuild"] }}',
+				         		value:{{ htmlData["newcpuAve"]|tojson }},
+				         		color:'#9CCEF0'//'#c56966'
+				         	}
+				         ];
+				var chart = new iChart.ColumnMulti2D({
+						render : 'canvasCpuChart',
+						data: data,
+						labels:{{ htmlData["cpuCmpLabel"]|tojson }},
+						title : 'Topology test tools {{ htmlData["mark"] }} Cpu Usage',
+						subtitle : '{{ htmlData["timesubtitle"]|safe }}',
+						footnote : 'data source：topology test. Time Unit:MHz',
+						width : 800,
+						height : 400,
+						background_color : '#c1ffe4',
+				        animation : true,
+				        animation_duration:1000,
+
+						legend:{
+							enable:true,
+							background_color : null,
+							border : {
+								enable : false
+							}
+						},
+				        tip:{
+				            enable:true,
+					        listeners:{
+						        parseText:function(tip,name,value,a,index){
+							        var id = data[parseInt(index)]["value"].indexOf(value)
+							        var conterValue = data[1-parseInt(index)]["value"][id]
+							        var base = value
+							        if(index ==0){
+							         	base = conterValue
+							        }
+							        var diff=""
+							        if ( parseInt(value) > parseInt(conterValue) ){
+							           	diff = "+"+ (parseFloat(value-conterValue)*100/base).toFixed(2) + "%"
+							        }else{
+							           	diff = "-" + (parseFloat(conterValue-value)*100/base).toFixed(2) + "%"
+							        }
+							        return diff
+						        }
+					        }
+				        },
+						coordinate:{
+							background_color : '#c1ffe4',
+							scale:[{
+								 position:'left',	
+								 start_scale:0,
+								 end_scale:140,
+								 scale_space:200
+							}],
+							width:650,
+							height:260
+						}
+				});
+				chart.draw();
+			});
+            
+
+            {% if htmlData["upgrade"] %}
+							$(function(){
+				var data = [
+				         	{
+				         		name : 'build {{ htmlData["toolsbuildold"] }}',
+				         		value:{{ htmlData["oldfailPing"]|tojson }},
+				         		color: '#80bd91'
+				         	},
+				         	{
+				         		name : 'build {{ htmlData["toolsbuild"] }}',
+				         		value:{{ htmlData["newfailPing"]|tojson }},
+				         		color:'#9CCEF0'
+				         	}
+				         ];
+				var chart = new iChart.ColumnMulti2D({
+						render : 'canvasPingChart',
+						data: data,
+						labels:{{ htmlData["wingosList"]|tojson }},
+						title : 'Topology test tools {{ htmlData["mark"] }} failed ping packets statistic',
+						subtitle : '{{ htmlData["timesubtitle"]|safe }}',
+						footnote : 'data source：topology test.',
+						width : 800,
+						height : 400,
+						background_color : '#c1ffe4',
+				        animation : true,
+				        animation_duration:1000,
+
+						legend:{
+							enable:true,
+							background_color : null,
+							border : {
+								enable : false
+							}
+						},
+				        tip:{
+				            enable:true,
+					        listeners:{
+						        parseText:function(tip,name,value,a,index){
+							        var id = data[parseInt(index)]["value"].indexOf(value)
+							        var conterValue = data[1-parseInt(index)]["value"][id]
+							        var base = value
+							        if(index ==0){
+							         	base = conterValue
+							        }
+							        var diff=""
+							        if ( parseInt(value) > parseInt(conterValue) ){
+							           	diff = "+"+ (parseFloat(value-conterValue)*100/base).toFixed(2) + "%"
+							        }else{
+							           	diff = "-" + (parseFloat(conterValue-value)*100/base).toFixed(2) + "%"
+							        }
+							        return diff
+						        }
+					        }
+				        },
+						coordinate:{
+							background_color : '#c1ffe4',
+							scale:[{
+								 position:'left',	
+								 start_scale:0,
+								 end_scale:10,
+								 scale_space:1
+							}],
+							width:650,
+							height:260
+						}
+				});
+				chart.draw();
+			});
+            {% endif %}
+
+
+            {% for dlist in htmlData["cpuList"] %}
+				$(function(){
+			var data = [
+			        	{
+			        		name : 'build {{ htmlData["toolsbuild"] }}',
+			        		value:{{ dlist["newcpu"]|tojson }},
+			        		color:'#c56966',
+			        		line_width:2
+			        	},
+                        {
+                            name : 'build {{ htmlData["toolsbuildold"] }}',
+                            value: {{ dlist["oldcpu"]|tojson }},
+                            color:'#1385a5',
+                            line_width:2
+                        },
+			       ];
+			var chart = new iChart.LineBasic2D({
+						render : 'canvasDiv_{{ dlist["gosname"]|safe }}',
+						data: data,
+						title : '{{ dlist["gosname"] }} cpu usage chart',
+                        footnote : 'Y Axis: CPU Usage(Unit: MHz), X Axis: time (Unit: Second)',
+						width : 800,
+						height : 400,
+						background_color : '#c1ffe4',
+						coordinate:{height:'90%',background_color:'#f6f9fa'},
+						sub_option:{
+							hollow_inside:false,
+							point_size:12
+						},
+						labels:{{ dlist["cpulabel"]|tojson }},
+							legend : {
+								enable : true,
+								row:1,
+								column : 'max',
+								valign:'top',
+								sign:'bar',
+								background_color:null,
+								offsetx:-80,
+								border : true
+							},
+							coordinate:{
+								width:640,
+								height:240,
+								axis:{
+									color:'#9f9f9f',
+									width:[0,0,2,2]
+								},
+							}
+					});
+			chart.draw();
+		});
+        
+        $(function(){
+			var data = [
+			        	{
+			        		name : 'build {{ htmlData["toolsbuild"] }}',
+			        		value:{{ dlist["newmem"]|tojson }},
+			        		color:'#c56966',
+			        		line_width:2
+			        	},
+                        {
+                            name : 'build {{ htmlData["toolsbuildold"] }}',
+                            value: {{ dlist["oldmem"]|tojson }},
+                            color:'#1385a5',
+                            line_width:2
+                        },
+			       ];
+			var chart = new iChart.LineBasic2D({
+						//render : 'canvasDiv_Mem_{{ dlist["gosname"]|safe }}{{ dlist["gosinstallTimeDiff"]|safe }}',
+						render : 'canvasDiv_Mem_{{ dlist["gosname"]|safe }}',
+						data: data,
+						title : '{{ dlist["gosname"] }} Memory usage chart',
+                        footnote : 'Y Axis: memory Usage(Unit: Mb), X Axis: time (Unit: Second)',
+						width : 800,
+						height : 400,
+						background_color : '#c1ffe4',
+						coordinate:{height:'90%',background_color:'#f6f9fa'},
+						sub_option:{
+							hollow_inside:false,
+							point_size:12
+						},
+						labels:{{ dlist["cpulabel"]|tojson }},
+							legend : {
+								enable : true,
+								row:1,
+								column : 'max',
+								valign:'top',
+								sign:'bar',
+								background_color:null,
+								offsetx:-80,
+								border : true
+							},
+							coordinate:{
+								width:640,
+								height:240,
+								axis:{
+									color:'#9f9f9f',
+									width:[0,0,2,2]
+								},
+							}
+					});
+			chart.draw();
+		});
+     {% endfor %}
+</script>  
+  </head> 
+<body style="background:#99CCFF" >
+    <div>
+        <h1 style="text-align:center">Topology Result for tools build {{ htmlData["toolsbuild"] }}</h1>
+    </div>
+    <div class="container" align="center">
+    	<h3> {{ htmlData["summary"]|safe }}</h3>
+    	
+    	<h3> {{ htmlData["runFrequencySummary"]|safe }}</h3>
+        <div id="canvasInstall"></div>  
+        <h3> Memory Usage statistic chart</h3>
+        <div id="canvasMemChart"></div>  
+        <h3> Cpu Usage statistic chart</h3>
+        <div id="canvasCpuChart"></div>  
+        {% if htmlData["upgrade"] %}
+            <h3> Failed ping packet statistic when windows tools upgrade</h3>
+            <h4> If the bar for the build is missing, that means NO fail count</h4>
+            <div id="canvasPingChart"></div>  
+        {% endif %}
+
+        <h2> Detail Data for Cpu/Memory Usage for each Gos</h2>
+        {% for gos in htmlData["gosList"] %}
+        <h3> Cpu and Memory Usage for GOS {{ gos }} during tools installation </h3>
+        <div id="canvasDiv_{{ gos }}"></div>  
+        <div id="canvasDiv_Mem_{{ gos }}"></div>
+        {% endfor %}
+    </div>
+</body>  
+</html>  

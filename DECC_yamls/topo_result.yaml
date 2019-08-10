@@ -1,0 +1,48 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: topo-result-display-deployment
+  labels:
+    app: topo-result-display
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: topo-result-display
+  template:
+    metadata:
+      labels:
+        app: topo-result-display
+    spec:
+      containers:
+      - name: topo-result-display
+        image: reg/topology/topo_result_disply:v1
+        imagePullPolicy: Always
+        env:
+          - name: BUILD_REST_URL
+            value: "http://topo-restservice:5000/topo/api/v1.0/toolsbuild_query"
+          - name: DATA_REST_URL
+            value: "http://topo-restservice:5000/topo/api/v1.0/results_query"
+          - name: ESX_REST_URL
+            value: "http://topo-restservice:5000/topo/api/v1.0/esxlist_query"
+        ports:
+          - containerPort: 5000
+      nodeSelector:
+        nodeType: worker
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: topo-result-display
+  labels:
+    name: topo-result-display
+spec:
+  type: NodePort
+  ports:
+  - protocol: TCP
+    port: 5000
+    targetPort: 5000
+  selector:
+    app: topo-result-display

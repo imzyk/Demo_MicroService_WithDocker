@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-rs1
+  labels:
+    name: mongo-rs1
+spec:
+  type: NodePort
+  ports:
+  - protocol: TCP
+    port: 27017
+    targetPort: 27017
+  selector:
+    app: mongo-rs1

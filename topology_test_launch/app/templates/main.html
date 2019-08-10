@@ -1,0 +1,77 @@
+<!DOCTYPE html> 
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<style>
+body{TEXT-ALIGN: center;}
+#center{ MARGIN-RIGHT: auto;
+MARGIN-LEFT: auto;
+height:200px;
+background:#99CCFF;
+width:400px;
+vertical-align:middle;
+line-height:20px;
+padding-top: 20px;
+}
+</style>
+
+<body style="background:#99CCFF">
+{% extends "bootstrap/base.html" %}
+{% block title %}Topology{% endblock %}
+
+{% block content %}
+<div class="container">
+<div class="page-header">
+<h1>Topology result query</h1>
+</div>
+</div>
+<form id="my_form" method="post" role="form" class="form-horizontal">
+<div class="container" id=center >
+<label for="warning">Note: The backend hard ware used in Topology test is shared with stress test</label>
+<label for="warning">Please do not submit the same build multiple times. </label>
+<label for="warning">Please select a build and type from the drop-down list:</label>
+<select class="form-control" name="selValue" class="selectpicker span2" style="background:#66CCFF">
+  {% for mode in ModeList %}
+  <option>{{ mode }}</option>
+  {% endfor %}
+</select>
+<select class="form-control" name="TypeValue" class="selectpicker span2" style="background:#66CCFF">
+  {% for type in TypeList %}
+  <option>{{ type }}</option>
+  {% endfor %}
+</select>
+     
+<input type="text" class="form-control" name="hostbuild" id="host_build" placeholder="Host Build Number" style="background:#66CCFF">
+      
+      
+   <input type="text" class="form-control" name="vcbuild" id="vc_build" placeholder="vCenter Build Number" style="background:#66CCFF">
+      
+
+      
+      <input type="text" class="form-control" name="toolsbuild" id="tools_build" placeholder="Tools Build Number" style="background:#66CCFF">
+     
+      
+      <input type="text" class="form-control" name="legacytoolsbuild" id="legacy_tools_build" placeholder="Legacy Tools Build Number" style="background:#66CCFF">
+      <label for="warning">ALPS build is for debug only, leave for blank.</label>
+      <input type="text" class="form-control" name="alpsbuild" id="alps_tools_build" placeholder="ALPS Build Number" style="background:#66CCFF">
+      <label for="warning">Please fill in the email address to got notified when test is done.</label>
+      <input type="text" class="form-control" name="emailaddress:" id="alps_tools_email_ad" placeholder="Email Address" style="background:#66CCFF">
+      
+			<input value='Check the result' class="btn btn-success" type='submit'>
+		</form>
+</div>
+{% endblock %}
+</body>
+<script>
+ window.onload=function(){  
+              $('.selectpicker').selectpicker();  
+              prettyPrint();  
+          };  
+    $(function() {
+        $(".btn").click(function(){
+			var val = $('.selectpicker').val()
+			alert(val);
+        });
+    });  
+</script>
+</html>

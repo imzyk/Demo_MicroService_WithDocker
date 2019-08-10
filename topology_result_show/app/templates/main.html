@@ -1,0 +1,182 @@
+<!DOCTYPE html> 
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<style>
+body{TEXT-ALIGN: center;}
+#center{ MARGIN-RIGHT: auto;
+MARGIN-LEFT: auto;
+height:200px;
+background:#99CCFF;
+width:400px;
+vertical-align:middle;
+line-height:20px;
+padding-top: 20px;
+}
+</style>
+<script type="text/javascript">
+
+function ajaxFirstOnChange(build) {
+  console.log("Got value of pop down list "+build);
+  console.log($('select[name=esxValue]'))
+  $.ajax({
+        type : "GET",
+        url : "/result/host_builds",
+        data: "tools_build="+build,
+        contentType: 'application/json',
+        success: function(result) {
+            console.log(result);
+            $('#esxbuildlist').empty();
+            $('#esxbuildlist').append('<option value>Please select a ESX build</option>')
+            result.forEach(function(entry) {
+                console.log("append build "+ entry +" to legacy popup list");
+                $('#esxbuildlist').append('<option value>'+entry+'</option>');
+            });
+        }
+    });
+}
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+<script type="text/javascript">
+var legacyToolsSelector = '#legacytoolslist';
+var legacyEsxSelector = '#legacyesxbuildlist';
+
+$(document).ready(function() {
+
+  $(legacyToolsSelector).change(function() {
+    var toolsbuild = this.value;
+    console.log("selected value is " + toolsbuild);
+
+    $.ajax({
+        type : "GET",
+        url : "/result/host_builds",
+        //data: JSON.stringify(toolsbuild),
+        data: "tools_build="+toolsbuild,
+        contentType: 'application/json;charset=UTF-8',
+        success: function(result) {
+            console.log(result);
+            $(legacyEsxSelector).empty();
+            $(legacyEsxSelector).append('<option value>Please select a ESX build</option>')
+            result.forEach(function(entry) {
+                console.log("append build "+ entry +" to legacy popup list");
+                $(legacyEsxSelector).append('<option value>'+entry+'</option>');
+            });
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+        alert(xhr.status);
+        alert(thrownError);
+        alert(xhr.responseText);
+        }
+    });
+  });
+});
+
+</script>
+
+
+
+<body style="background:#99CCFF">
+{% extends "bootstrap/base.html" %}
+{% block title %}Topology{% endblock %}
+
+{% block content %}
+
+<div class="container">
+<div class="page-header">
+<h1>Topology result query</h1>
+</div>
+</div>
+<form id="my_form" method="post" role="form" class="form-horizontal">
+
+<div class="container" id=center >
+<label for="warning">Please select a build and esx build from the drop-down list:</label>
+<select class="form-control" name="buildValue" class="selectpicker span2" onchange='ajaxFirstOnChange(this.value)' style="background:#66CCFF">
+  <option value="" selected disabled hidden>Please select a tools build</option>
+  {% for build in buildList %}
+  <option>{{ build }}</option>
+  {% endfor %}
+</select>
+<select class="form-control"  id = "esxbuildlist" name="esxValue" class="selectpicker" style="background:#66CCFF">
+  <option value="" selected disabled hidden>Please select a ESXi build</option>
+  {% for build in esxList %}
+  <option>{{ build }}</option>
+  {% endfor %}
+</select>
+<label for="warning">Please select a build and esx build from the drop-down list for COMPARE:</label>
+<select class="form-control" id = "legacytoolslist" name="legacyValue" class="selectpicker span2" style="background:#66CCFF">
+  <option value="" selected disabled hidden>Please select a tools build to compare</option>
+  {% for build in legacyList %}
+  <option>{{ build }}</option>
+  {% endfor %}
+</select>
+<select class="form-control" id = "legacyesxbuildlist" name="legacyEsxValue" class="selectpicker span2" style="background:#66CCFF">
+  <option value="" selected disabled hidden>Please select a ESXi build to compare</option>
+  {% for build in legacyEsxList %}
+  <option>{{ build }}</option>
+  {% endfor %}
+</select>
+
+<label for="warning">Please select a type(install/upgrade) and mode(triple/sigle/triple+single) from the drop-down list:</label>
+<select class="form-control" name="typeValue" class="selectpicker span2" style="background:#66CCFF">
+  {% for type in TypeList %}
+  <option>{{ type }}</option>
+  {% endfor %}
+</select>
+<select class="form-control" name="modeValue" class="selectpicker span2" style="background:#66CCFF">
+  {% for type in ModeList %}
+  <option>{{ type }}</option>
+  {% endfor %}
+</select>
+			<input value='Check the result' class="btn btn-success" type='submit'>
+		</form>
+</div>
+{% endblock %}
+<script type="text/javascript">
+/*$(function() {
+
+ window.onload=function(){  
+              $('.selectpicker').selectpicker();  
+              prettyPrint();  
+          };  
+        }*/
+    /*$(function() {
+        $(".btn").click(function(){
+      var val = $('.selectpicker').val()
+      alert(val);
+        });
+    });  
+
+    $(function() {
+
+      $(".selectpicker").on('change', function(){
+        var selected = $(this).find("option:selected").val();
+        alert("sdsdss");
+        alert(selected);
+      });
+  
+     });
+    /*$('#buildValue').onchange( function() {
+    var data = save_input(); // data
+
+    $.ajax({
+        type : "POST",
+        url : "/ }}",
+        data: JSON.stringify(data),
+        contentType: 'application/json;charset=UTF-8',
+        success: function(result) {
+            console.log(result);
+        }
+    });
+
+    console.log(data);
+});*/
+function ajaxFirstOnChange1() {
+  //this function works
+  alert("Hello! I am an alert box!!");
+}
+</script>
+
+
+</body>
+</html>
